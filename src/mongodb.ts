@@ -37,6 +37,7 @@ export async function auth(email: string, password: string) {
     return await UserModel.findOne({ email, password });
 }
 export async function auth_user(body: string){
+    console.log(body);
     const user = body.split("&")[0].split("=")[1];
     const pass = body.split("&")[1].split("=")[1];
     const status = await auth(user, pass);
@@ -48,7 +49,6 @@ export async function auth_user(body: string){
 //creamos el esquema de la base de datos, estadisticas de uso del usuario
 const StatsSchema = new Schema({
     user: String,
-    query: Number,
     response: Number,
     total_credits: Number,
     available_credits: Number,
@@ -57,8 +57,8 @@ const StatsSchema = new Schema({
 
 const StatsModel = mongoose.model('Stats', StatsSchema);
 
-export async function createStats(user: string, query: number, response: number, models: Array<string>) {
-    const stats = new StatsModel({ user, query, response, models });
+export async function createStats(user: string, models: Array<string>, total_credits: number, available_credits: number) {
+    const stats = new StatsModel({ user, models, total_credits, available_credits });
     return await stats.save();
 }
 export async function getStats() {
@@ -67,9 +67,49 @@ export async function getStats() {
 export async function getStatsUser(user: string) {
     return await StatsModel.findOne({ user });
 }
-export async function updateStats(id: string, user: string, query: number, response: number, models: Array<string>) {
-    return await StatsModel.findByIdAndUpdate(id, { user, query, response, models });
+export async function add_tokens_usage(user: string, tokens: number): Promise<any>{
+    const stats = await getStatsUser(user);
+    try{
+        if (stats && stats.available_credits !== undefined) {
+            stats.available_credits -= tokens;
+            await stats.save();
+        }
+    }
+    catch(error){
+        console.log(error);
+    }
+    return stats;
 }
+export async function add_tokens_credit(user: string, tokens: number): Promise<any>{
+    const stats = await getStatsUser(user);
+    try{
+        if (stats && stats.available_credits && stats.total_credits !== undefined) {
+            stats.total_credits += tokens;
+            stats.available_credits += tokens;
+            await stats.save();
+        }
+    }
+    catch(error){
+        console.log(error);
+    }
+    return stats;
+}
+
+export async function set_to_cero(user: string): Promise<any>{
+    const stats = await getStatsUser(user);
+    try{
+        if (stats && stats.available_credits && stats.total_credits !== undefined) {
+            stats.available_credits = 0;
+            stats.total_credits = 0;
+            await stats.save();
+        }
+    }
+    catch(error){
+        console.log(error);
+    }
+    return stats;
+}
+
 export async function deleteStats(id: string) {
     return await StatsModel.findByIdAndDelete(id);
 }
