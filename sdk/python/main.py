@@ -5,6 +5,8 @@ import os
 
 load_dotenv()
 
+server_ip = os.getenv("SERVER_IP")
+port = int(os.getenv("SERVER_PORT"))
 class llm:
     def __init__(self):
         self.user = ''
@@ -13,12 +15,22 @@ class llm:
     def set_credentials(self, user, token):
         self.user = user
         self.token = token
+        conn = http.client.HTTPConnection(server_ip, port)
+        conn.request("POST", "/auth", f"user={self.user}&token={self.token}")
+        response = conn.getresponse()
+        if response.status == 200:
+            if response.read().decode('utf-8') == '200':
+                return True
+            else:
+                return False
+        else:
+            return False
 
-    def chat(self, prompt, model, temperature=0.9, max_tokens=150, stream=True):
-        
+    def chat(self, prompt, model="gpt-3.5-turbo", temperature=0.9, max_tokens=150, stream=True):
+
         conn = http.client.HTTPConnection("localhost", 3000)
-        if stream: conn.request("POST", "/chat_stream", "prompt=hola como estas?")
-        elif not stream: conn.request("POST", "/chat_simple", "prompt=hola como estas?")
+        if stream: conn.request("POST", "/chat_stream", f"user={self.user}&token={self.token}&prompt={prompt}")
+        elif not stream: conn.request("POST", "/chat_simple", f"user={self.user}&token={self.token}&prompt={prompt}")
         response = conn.getresponse()
         if response.status == 200 and stream:
             start = time.time()
@@ -28,7 +40,6 @@ class llm:
                 if not chunk:
                     break  # Sale del bucle si no hay más datos
                 try:
-                    print(chunk.decode('utf-8'))
                     yield chunk.decode('utf-8')  # Decodifica y muestra el bloque de datos
                 except:
                     pass
