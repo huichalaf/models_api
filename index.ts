@@ -62,6 +62,5 @@ const server = Bun.serve({
         key: fs.readFileSync("./mi_certificado.key", 'utf8'),
         cert: fs.readFileSync("./mi_certificado.crt", 'utf8'),
     },*/
-  });
-  
-  console.log(`Listening on http://localhost:${server.port} ...`);
+});
+console.log(`Listening on http://localhost:${server.port} ...`);
