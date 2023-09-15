@@ -1,5 +1,5 @@
 import { chat, simple_chat } from "./src/openai.ts";
-import { auth, auth_user } from "./src/mongodb.ts";
+import { auth, auth_user, createStats, createUser } from "./src/mongodb.ts";
 const fs = require('fs');
 import { get_prompt } from "./src/functions.ts";
 
@@ -54,6 +54,20 @@ const server = Bun.serve({
                 return new Response("404");
             }
             return new Response("200");
+        }
+        if (url.pathname === "/create_user"){
+            try {
+                const body = await req.text();
+                const name = body.split("&")[0].split("=")[1];
+                const email = body.split("&")[1].split("=")[1];
+                const password = body.split("&")[2].split("=")[1];
+                console.log(name, email, password);
+                await createUser(name, email, password);
+                await createStats(email, 0, 0, [], 0, 0);
+                console.log('Usuario creado con éxito.');
+            } catch (error) {
+                console.error('Error al crear usuario:', error);
+            }
         }
         return new Response("404!");
     },

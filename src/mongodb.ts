@@ -57,7 +57,7 @@ const StatsSchema = new Schema({
 
 const StatsModel = mongoose.model('Stats', StatsSchema);
 
-export async function createStats(user: string, query: number, response: number, models: Array<string>) {
+export async function createStats(user: string, query: number, response: number, models: Array<string>, total_credits: number, available_credits: number) {
     const stats = new StatsModel({ user, query, response, models });
     return await stats.save();
 }
