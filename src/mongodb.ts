@@ -37,6 +37,7 @@ export async function auth(email: string, password: string) {
     return await UserModel.findOne({ email, password });
 }
 export async function auth_user(body: string){
+    console.log(body);
     const user = body.split("&")[0].split("=")[1];
     const pass = body.split("&")[1].split("=")[1];
     const status = await auth(user, pass);

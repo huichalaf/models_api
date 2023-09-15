@@ -1,7 +1,7 @@
 import { chat, simple_chat } from "./src/openai.ts";
 import { auth_user, createStats, createUser, add_tokens_credit } from "./src/mongodb.ts";
 const fs = require('fs');
-import { get_prompt } from "./src/functions.ts";
+import { get_prompt, clean } from "./src/functions.ts";
 //cargamos las variables de entorno
 const dotenv = require('dotenv');
 dotenv.config();
@@ -15,7 +15,8 @@ const server = Bun.serve({
         }
         if (url.pathname === "/chat_stream"){
             //buscamos prompt en el body del post
-            const body = await req.text();
+            let body = await req.text();
+            body = await clean(body);
             const status = await auth_user(body);
             if(status === false){
                 return new Response("404");
@@ -40,6 +41,7 @@ const server = Bun.serve({
         if (url.pathname === "/chat_simple"){
             //buscamos prompt en el body del post
             const body = await req.text();
+            console.log(body);
             const status = await auth_user(body);
             if(status === false){
                 return new Response("404");
@@ -52,7 +54,7 @@ const server = Bun.serve({
             }
         if (url.pathname === "/auth"){
             //buscamos prompt en el body del post
-            const body = await req.text();
+            let body = await req.text();
             const status = await auth_user(body);
             if(status === false){
                 return new Response("404");
