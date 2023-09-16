@@ -7,12 +7,12 @@ import db, {
   createStats,
   getStats,
   getStatsUser,
-  updateStats,
-  deleteStats,
+  startConnection,
   auth_user,
 } from '../src/mongodb'; // Reemplaza 'tu_modulo' con la ruta real de tu módulo
 
 async function menu() {
+  const db = await startConnection();
   console.log('==== Menú ====');
   console.log('1. Crear usuario');
   console.log('2. Mostrar usuarios');
