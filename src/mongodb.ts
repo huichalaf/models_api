@@ -1,8 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
-//cargamos variables de entorno
 import dotenv from 'dotenv';
 dotenv.config();
-//funcion para crear una conexion
 const mongodb_password = Bun.env.MONGODB_PASSWORD;
 const mongodb_user = Bun.env.MONGODB_USER;
 export async function startConnection() {
@@ -14,7 +12,7 @@ export async function startConnection() {
 }
 const db = startConnection();
 export default db;
-//creamos el esquema de la base de datos, usuario
+
 const UserSchema = new Schema({
     name: String,
     email: String,
@@ -50,7 +48,6 @@ export async function auth_user(body: string){
     }
     return true;
 }
-//creamos el esquema de la base de datos, estadisticas de uso del usuario
 const StatsSchema = new Schema({
     user: String,
     response: Number,

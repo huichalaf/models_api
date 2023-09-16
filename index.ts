@@ -2,7 +2,6 @@ import { chat, simple_chat } from "./src/openai.ts";
 import { auth_user, createStats, createUser, add_tokens_credit } from "./src/mongodb.ts";
 const fs = require('fs');
 import { get_prompt, clean } from "./src/functions.ts";
-//cargamos las variables de entorno
 const dotenv = require('dotenv');
 dotenv.config();
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN;
