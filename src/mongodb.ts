@@ -3,8 +3,12 @@ import mongoose, { Document, Schema } from 'mongoose';
 import dotenv from 'dotenv';
 dotenv.config();
 //funcion para crear una conexion
+const mongodb_password = Bun.env.MONGODB_PASSWORD;
+const mongodb_user = Bun.env.MONGODB_USER;
 export async function startConnection() {
-    let db = await mongoose.connect('mongodb://localhost:27017/', {});
+    const string = 'mongodb+srv://'+mongodb_user+':'+mongodb_password+'@serverlessinstance0.oo6ew3r.mongodb.net/';
+    console.log(string);
+    let db = await mongoose.connect(string, {});
     console.log('Database is connected');
     return db;
 }
