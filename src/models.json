@@ -1,0 +1,12 @@
+[
+    {
+        "name": "math_problem_solver",
+        "description": "A math problem solver that can solve any math problem.",
+        "model": "ft:gpt-3.5-turbo-0613:prisdai::7r4qSw2g"
+    },
+    {
+        "name": "physics_problem_solver",
+        "description": "A physics problem solver that can solve any physics problem.",
+        "model": ""
+    }
+]

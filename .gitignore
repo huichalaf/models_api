@@ -170,3 +170,4 @@ dist
 mykey.key
 mycert.pem
 build/*
+.token

@@ -16,7 +16,7 @@ export default db;
 const UserSchema = new Schema({
     name: String,
     email: String,
-    password: String
+    createdAt: Date,
 });
 const UserModel = mongoose.model('User', UserSchema);
 export async function createUser(name: string, email: string, password: string) {
@@ -49,11 +49,9 @@ export async function auth_user(body: string){
     return true;
 }
 const StatsSchema = new Schema({
-    user: String,
-    response: Number,
-    total_credits: Number,
-    available_credits: Number,
-    models: Array
+    email: String,
+    tokens: Number,
+    a_tokens: Number,
 });
 
 const StatsModel = mongoose.model('Stats', StatsSchema);
@@ -65,14 +63,14 @@ export async function createStats(user: string, models: Array<string>, total_cre
 export async function getStats() {
     return await StatsModel.find();
 }
-export async function getStatsUser(user: string) {
-    return await StatsModel.findOne({ user });
+export async function getStatsUser(email: string) {
+    return await StatsModel.findOne({ email });
 }
 export async function add_tokens_usage(user: string, tokens: number): Promise<any>{
     const stats = await getStatsUser(user);
     try{
-        if (stats && stats.available_credits !== undefined) {
-            stats.available_credits -= tokens;
+        if (stats && stats.a_tokens !== undefined) {
+            stats.a_tokens -= tokens;
             await stats.save();
         }
     }
@@ -84,9 +82,9 @@ export async function add_tokens_usage(user: string, tokens: number): Promise<an
 export async function add_tokens_credit(user: string, tokens: number): Promise<any>{
     const stats = await getStatsUser(user);
     try{
-        if (stats && stats.available_credits && stats.total_credits !== undefined) {
-            stats.total_credits += tokens;
-            stats.available_credits += tokens;
+        if (stats && stats.a_tokens && stats.tokens !== undefined) {
+            stats.tokens += tokens;
+            stats.a_tokens += tokens;
             await stats.save();
         }
     }
@@ -99,9 +97,9 @@ export async function add_tokens_credit(user: string, tokens: number): Promise<a
 export async function set_to_cero(user: string): Promise<any>{
     const stats = await getStatsUser(user);
     try{
-        if (stats && stats.available_credits && stats.total_credits !== undefined) {
-            stats.available_credits = 0;
-            stats.total_credits = 0;
+        if (stats && stats.a_tokens && stats.tokens !== undefined) {
+            stats.a_tokens = 0;
+            stats.tokens = 0;
             await stats.save();
         }
     }
