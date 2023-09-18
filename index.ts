@@ -1,7 +1,7 @@
 import { chat, simple_chat } from "./src/openai.ts";
 import { auth_user, createStats, createUser, add_tokens_credit } from "./src/mongodb.ts";
 const fs = require('fs');
-import { get_prompt, clean } from "./src/functions.ts";
+import { get_prompt, get_model, clean, get_settings } from "./src/functions.ts";
 const dotenv = require('dotenv');
 dotenv.config();
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN;
@@ -13,7 +13,6 @@ const server = Bun.serve({
             return new Response("Hello World!");
         }
         if (url.pathname === "/chat_stream"){
-            //buscamos prompt en el body del post
             let body = await req.text();
             body = await clean(body);
             const status = await auth_user(body);
@@ -21,8 +20,9 @@ const server = Bun.serve({
                 return new Response("404");
             }
             const prompt = await get_prompt(body);
-            console.log(body);
-            const response = chat(prompt);
+            const model = await get_model(body);
+            const settings = await get_settings(body);
+            const response = chat(prompt, model, settings);
             let value = await response.next();
             const chat_response = new ReadableStream({
                 type: "direct",
@@ -40,14 +40,14 @@ const server = Bun.serve({
         if (url.pathname === "/chat_simple"){
             //buscamos prompt en el body del post
             const body = await req.text();
-            console.log(body);
             const status = await auth_user(body);
             if(status === false){
                 return new Response("404");
             }
             const prompt = await get_prompt(body);
-            console.log(body);
-            const response = await simple_chat(prompt);
+            const model = await get_model(body);
+            const settings = await get_settings(body);
+            const response = await simple_chat(prompt, model, settings);
             console.log(response);
             return new Response(response);
             }

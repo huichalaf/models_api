@@ -9,13 +9,19 @@ dotenv.config();
 const serverIp = process.env.SERVER_IP;
 const serverPort = parseInt(process.env.SERVER_PORT);
 
-export function chat(user, token, prompt, onData, onError, onComplete, model = 'gpt-3.5-turbo', temperature = 0.9, maxTokens = 150, stream = true) {
+export function chat(user, token, prompt, model, onData, onError, onComplete, temperature = 0.7, maxTokens = 500, stream = true, topP = 1, frequencyPenalty = 0, presencePenalty = 0) {
   const path = stream ? '/chat_stream' : '/chat_simple';
 
   const requestBody = {
     user: user,
     token: token,
     prompt: prompt,
+    model: model,
+    temperature: temperature,
+    max_tokens: maxTokens,
+    top_p: topP,
+    frequency_penalty: frequencyPenalty,
+    presence_penalty: presencePenalty,
   };
 
   const requestBodyString = querystring.stringify(requestBody);

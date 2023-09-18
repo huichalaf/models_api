@@ -5,23 +5,34 @@ dotenv.config();
 const openai_api_key = process.env.OPENAI_API_KEY;
 const client = new OpenAI(openai_api_key);
 
-export async function* chat(prompt: string): AsyncGenerator<string>{
+export async function* chat(prompt: string, model: string, settings: any): AsyncGenerator<string>{
+    console.log(model);
     const completion = await client.chat.completions.create({
         messages: [{ role: 'user', content: prompt }],
-        model: 'gpt-3.5-turbo',
+        model: model,
         stream: true,
+        temperature: settings.temperature,
+        max_tokens: settings.max_tokens,
+        top_p: settings.top_p,
+        frequency_penalty: settings.frequency_penalty,
+        presence_penalty: settings.presence_penalty,
       });
     for await (const part of completion) {
         yield part.choices[0]?.delta?.content || '';
     }
 }
 
-export async function simple_chat(prompt: string): Promise<string>{
+export async function simple_chat(prompt: string, model: string, settings: any): Promise<string>{
+    console.log(model);
     const completion = await client.chat.completions.create({
         messages: [{ role: 'user', content: prompt }],
-        model: 'gpt-3.5-turbo',
+        model: model,
         stream: false,
+        temperature: settings.temperature,
+        max_tokens: settings.max_tokens,
+        top_p: settings.top_p,
+        frequency_penalty: settings.frequency_penalty,
+        presence_penalty: settings.presence_penalty,
     })
-    console.log(completion);
     return completion.choices[0]?.message.content || '';
 }

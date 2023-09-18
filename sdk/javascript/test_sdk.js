@@ -1,22 +1,18 @@
 import {chat} from './main.js';
-
-
 async function main() {
   try {
     chat(
         'papo9292@gmail.com',
-        'JENGA9292jenga9292',
-        'tuPregunta',
+        'password1234',
+        'Cuanto es 2+2',
+        'math_problem_solver',
         (data) => {
-          // Callback para onData: Procesar los datos a medida que llegan
-          console.log('Dato recibido:', data);
+          console.log(data);
         },
         (error) => {
-          // Callback para onError: Manejar errores
           console.error('Error:', error);
         },
         () => {
-          // Callback para onComplete: Realizar acciones al finalizar el stream
           console.log('Stream completado');
         }
       );      
@@ -24,5 +20,4 @@ async function main() {
     console.error('Error en la solicitud:', error);
   }
 }
-
 main();
