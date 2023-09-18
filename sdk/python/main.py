@@ -49,19 +49,16 @@ class llm:
         if stream:
             response = requests.post(f"{url}/chat_stream", data=data, stream=True)
             if response.status_code == 200:
-                start = time.time()
                 for chunk in response.iter_content(chunk_size=4):
                     try:
                         yield chunk.decode('utf-8')
                     except Exception as e:
                         pass
-                print("\nTiempo de lectura:", time.time() - start)
             else:
-                print("Error:", response.status_code, response.reason)
+                return f"{response.status_code}, {response.reason}"
         elif not stream:
             response = requests.post(f"{url}/chat_simple", data=data)
             if response.status_code == 200:
-                print(response.text)
                 return response.text
             else:
-                print("Error:", response.status_code, response.reason)
+                return f"{response.status_code}, {response.reason}"

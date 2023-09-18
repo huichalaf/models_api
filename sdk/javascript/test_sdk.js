@@ -13,11 +13,11 @@ async function main() {
           console.error('Error:', error);
         },
         () => {
-          console.log('Stream completado');
+          console.log('Stream completed');
         }
       );      
   } catch (error) {
-    console.error('Error en la solicitud:', error);
+    console.error('Error in the request:', error);
   }
 }
 main();
