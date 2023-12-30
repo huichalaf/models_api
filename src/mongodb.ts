@@ -4,7 +4,7 @@ dotenv.config();
 const mongodb_password = Bun.env.MONGODB_PASSWORD;
 const mongodb_user = Bun.env.MONGODB_USER;
 export async function startConnection() {
-    const string = 'mongodb+srv://'+mongodb_user+':'+mongodb_password+'@serverlessinstance0.oo6ew3r.mongodb.net/';
+    const string = 'mongodb+srv://'+mongodb_user+':'+mongodb_password+'@your-url-here/';
     console.log(string);
     let db = await mongoose.connect(string, {});
     console.log('Database is connected');
